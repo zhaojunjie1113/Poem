@@ -70,6 +70,8 @@ public class ColumnFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.setAdapter(new MyColumnRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.addItemDecoration(new DividerItemDecoration(
+                    getActivity(), DividerItemDecoration.VERTICAL_LIST));
         }
         return view;
     }

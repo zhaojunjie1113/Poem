@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.id_content, recomandFragment);
         } else if (id == R.id.nav_gallery) {
             toolbar.setTitle("发现");
-            toolbar.inflateMenu(R.menu.search);
             if (discorveryFragment == null) {
                 discorveryFragment = new DiscorveryFragment();
             }
@@ -118,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
             toolbar.setTitle("专栏");
             if (columnFragment == null) {
-                columnFragment = new ColumnFragment();
+                columnFragment = ColumnFragment.newInstance(1);
             }
             transaction.replace(R.id.id_content, columnFragment);
         } else if (id == R.id.nav_manage) {
