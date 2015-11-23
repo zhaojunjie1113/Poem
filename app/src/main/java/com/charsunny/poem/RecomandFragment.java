@@ -2,49 +2,26 @@ package com.charsunny.poem;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import net.sourceforge.pinyin4j.*;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
-import com.charsunny.poem.dummy.DummyContent;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.*;
 import com.victor.loading.book.BookLoading;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Created by junjiezhao on 15/11/22.
@@ -139,7 +116,7 @@ public class RecomandFragment extends Fragment {
             TextView authorView = (TextView)view.findViewById(R.id.author);
             TextView titleView = (TextView)view.findViewById(R.id.title);
             TextView descView = (TextView)view.findViewById(R.id.desc);
-            JsonObject poem =  mValues.get(position).getAsJsonObject();
+            final JsonObject poem =  mValues.get(position).getAsJsonObject();
             FontManager.sharedInstance(null).applyFont(authorView, titleView, descView);
             if (poem instanceof  JsonObject) {
                 String poet = poem.get("Poet").getAsJsonObject().get("Name").getAsString();
@@ -154,18 +131,17 @@ public class RecomandFragment extends Fragment {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent it = new Intent(mActivity, PoemContentActivity.class);
+                        Intent it = new Intent(mActivity, PoetActivity.class);
                         it.putExtra("pos", pid);
-                        //startActivity(it);
+                        startActivity(it);
                     }
                 });
 
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent it = new Intent(mActivity, PoemContentActivity.class);
-                        it.putExtra("pos", position);
-                        it.putExtra("ids", PoemContentAdapter.this.getItemIds());
+                        Intent it = new Intent(mActivity, PoemActivity.class);
+                        it.putExtra("pid", poem.get("Id").getAsInt());
                         startActivity(it);
                     }
                 });

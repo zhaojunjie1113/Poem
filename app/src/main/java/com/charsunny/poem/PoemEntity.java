@@ -5,6 +5,9 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "poem", id = "pid")
 public class PoemEntity extends Model {
     @Column(name = "pid")
@@ -28,5 +31,9 @@ public class PoemEntity extends Model {
 
     public static PoemEntity getPoemById(int id) {
         return new Select().from(PoemEntity.class).where("pid = ?", id).executeSingle();
+    }
+
+    public static List<PoemEntity> getPoemsByAuthor(int aid) {
+        return new Select().from(PoemEntity.class).where("poet_id = ?", aid).execute();
     }
 }
