@@ -39,8 +39,8 @@ public class PoetActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        int aid = getIntent().getIntExtra("pos", 0);
-        final AuthorEntity author = AuthorEntity.getPoetById(aid);
+        final int aid = getIntent().getIntExtra("pos", 0);
+        AuthorEntity author = AuthorEntity.getPoetById(aid);
         List<PoemEntity> poems = PoemEntity.getPoemsByAuthor(aid);
         if (author != null) {
             getSupportActionBar().setTitle(author.name);
@@ -60,13 +60,14 @@ public class PoetActivity extends AppCompatActivity {
         nameLabel.setText(author.name);
         descLabel.setText("共存诗词作品" + poems.size() + "首");
         FontManager.sharedInstance(null).applyFont(nameLabel, descLabel);
-        String image = "http://so.gushiwen.org/authorImg/" + hanyu.getStringPinYin(author.name)+ ".jpg";
-        Ion.with(imageView).error(R.drawable.ic_menu_gallery).load(image);
+        //String image = "http://so.gushiwen.org/authorImg/" + hanyu.getStringPinYin(author.name)+ ".jpg";
+        //Ion.with(imageView).error(R.drawable.ic_menu_gallery).load(image);
+
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent it = new Intent(PoetActivity.this, PoetDetailActivity.class);
-                it.putExtra("pid", author.pid);
+                it.putExtra("pid", aid);
                 startActivity(it);
             }
         });
