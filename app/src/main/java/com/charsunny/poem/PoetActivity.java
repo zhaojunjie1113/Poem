@@ -16,6 +16,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.koushikdutta.ion.Ion;
 import com.victor.loading.book.BookLoading;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public class PoetActivity extends AppCompatActivity {
     private View headerView;
     private BookLoading bookLoading;
     private PoetContentAdapter contentAdapter;
-
+    private RecomandFragment.Hanyu hanyu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +40,7 @@ public class PoetActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         int aid = getIntent().getIntExtra("pos", 0);
-        AuthorEntity author = AuthorEntity.getPoetById(aid);
+        final AuthorEntity author = AuthorEntity.getPoetById(aid);
         List<PoemEntity> poems = PoemEntity.getPoemsByAuthor(aid);
         if (author != null) {
             getSupportActionBar().setTitle(author.name);
@@ -51,6 +53,23 @@ public class PoetActivity extends AppCompatActivity {
         headerView = getLayoutInflater().inflate(R.layout.poet_header, listView, false);
         listView.addHeaderView(headerView);
         listView.setAdapter(contentAdapter);
+
+        ImageView imageView = (ImageView)headerView.findViewById(R.id.image);
+        TextView nameLabel = (TextView)headerView.findViewById(R.id.name);
+        TextView descLabel = (TextView)headerView.findViewById(R.id.desc);
+        nameLabel.setText(author.name);
+        descLabel.setText("共存诗词作品" + poems.size() + "首");
+        FontManager.sharedInstance(null).applyFont(nameLabel, descLabel);
+        String image = "http://so.gushiwen.org/authorImg/" + hanyu.getStringPinYin(author.name)+ ".jpg";
+        Ion.with(imageView).error(R.drawable.ic_menu_gallery).load(image);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(PoetActivity.this, PoetDetailActivity.class);
+                it.putExtra("pid", author.pid);
+                startActivity(it);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
