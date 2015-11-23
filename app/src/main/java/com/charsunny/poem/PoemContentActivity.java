@@ -39,19 +39,22 @@ public class PoemContentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poem_content);
+        int pos = getIntent().getIntExtra("pos",0);
+        int[] ids = getIntent().getIntArrayExtra("ids");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), pos, ids);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
+        mViewPager.setCurrentItem(pos);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +81,10 @@ public class PoemContentActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        if (item.getItemId() == android.R.id.home){
+            finish();
+            return true ;
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -90,22 +96,22 @@ public class PoemContentActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PoemContentFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
+        public PoemContentFragment() {
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
+        public static PoemContentFragment newInstance(int sectionNumber) {
+            PoemContentFragment fragment = new PoemContentFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
@@ -115,9 +121,18 @@ public class PoemContentActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            int pid = getArguments().getInt(ARG_SECTION_NUMBER);
+            PoemEntity poem = PoemEntity.getPoemById(pid);
             View rootView = inflater.inflate(R.layout.fragment_poem_content, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            if (poem != null) {
+                TextView titleView = (TextView) rootView.findViewById(R.id.title);
+                TextView authorView = (TextView) rootView.findViewById(R.id.author);
+                TextView textView = (TextView) rootView.findViewById(R.id.content);
+                titleView.setText(poem.name);
+                authorView.setText("测试");
+                textView.setText(poem.content);
+                FontManager.sharedInstance(null).applyFont(titleView,authorView,textView);
+            }
             return rootView;
         }
     }
@@ -128,33 +143,31 @@ public class PoemContentActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private int[] ids;
+        private int pos;
+
+        public SectionsPagerAdapter(FragmentManager fm, int pos, int[] ids) {
             super(fm);
+            this.ids = ids;
+            this.pos = pos;
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            // Return a PoemContentFragment (defined as a static inner class below).
+            int pid = ids[position];
+            return PoemContentFragment.newInstance(pid);
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return ids.length;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
             return null;
         }
     }

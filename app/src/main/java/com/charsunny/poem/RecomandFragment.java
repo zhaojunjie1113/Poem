@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import net.sourceforge.pinyin4j.*;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 import com.charsunny.poem.dummy.DummyContent;
 
@@ -79,10 +84,7 @@ public class RecomandFragment extends Fragment {
                 timeView.setText(time);
                 titleView.setText(title);
                 descView.setText(desc);
-                Typeface type = Typeface.createFromAsset(RecomandFragment.this.getActivity().getAssets(), "FZBWJ.ttf");
-                titleView.setTypeface(type);
-                timeView.setTypeface(type);
-                descView.setTypeface(type);
+                FontManager.sharedInstance(null).applyFont(timeView, titleView, descView);
                 bookLoading.stop();
                 bookLoading.setVisibility(View.GONE);
                 contentAdapter = new PoemContentAdapter(poems, RecomandFragment.this.getActivity());
@@ -95,9 +97,11 @@ public class RecomandFragment extends Fragment {
 
         private final JsonArray mValues;
         private final Activity mActivity;
+        private final Hanyu hanyu;
 
         public PoemContentAdapter(JsonArray items, Activity activity) {
             mValues = items;
+            hanyu = new Hanyu();
             mActivity = activity;
         }
         @Override
@@ -115,39 +119,98 @@ public class RecomandFragment extends Fragment {
             return position;
         }
 
+        public  int[] getItemIds() {
+            int[] list = new int[mValues.size()];
+            for (int i = 0; i < mValues.size(); i ++) {
+                JsonObject poem =  mValues.get(i).getAsJsonObject();
+                list[i] = poem.get("Id").getAsInt();
+            }
+            return list;
+        }
+
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.content_column, parent, false);
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.content_column, parent, false);
+            }
             ImageView imageView = (ImageView)view.findViewById(R.id.imageView);
             TextView authorView = (TextView)view.findViewById(R.id.author);
             TextView titleView = (TextView)view.findViewById(R.id.title);
             TextView descView = (TextView)view.findViewById(R.id.desc);
             JsonObject poem =  mValues.get(position).getAsJsonObject();
+            FontManager.sharedInstance(null).applyFont(authorView, titleView, descView);
             if (poem instanceof  JsonObject) {
+                String poet = poem.get("Poet").getAsJsonObject().get("Name").getAsString();
+                final int pid = poem.get("Poet").getAsJsonObject().get("Id").getAsInt();
+                String image = "http://so.gushiwen.org/authorImg/" + hanyu.getStringPinYin(poet)+ ".jpg";
                 titleView.setText(poem.get("Name").getAsString());
-                authorView.setText(poem.get("Poet").getAsJsonObject().get("Name").getAsString());
+                authorView.setText(poet);
                 String content = poem.get("RecDes").getAsString();
                 content = content.replace("\n","");
                 descView.setText(content);
+                Ion.with(imageView).error(R.drawable.ic_menu_gallery).load(image);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent it = new Intent(mActivity, PoemContentActivity.class);
+                        it.putExtra("pos", pid);
+                        //startActivity(it);
+                    }
+                });
+
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent it = new Intent(mActivity, PoemContentActivity.class);
+                        it.putExtra("pos", position);
+                        it.putExtra("ids", PoemContentAdapter.this.getItemIds());
+                        startActivity(it);
+                    }
+                });
             }
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent it = new Intent(mActivity, PoemContentActivity.class);
-                    startActivity(it);
-                }
-            });
-
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent it = new Intent(mActivity, PoemContentActivity.class);
-                    startActivity(it);
-                }
-            });
             return view;
+        }
+    }
+    public class Hanyu{
+        private HanyuPinyinOutputFormat format = null;
+        private String[] pinyin;
+
+        public Hanyu(){
+            format = new HanyuPinyinOutputFormat();
+            format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+            pinyin = null;
+        }
+
+        //转换单个字符
+        public String getCharacterPinYin(char c){
+            try{
+                pinyin = PinyinHelper.toHanyuPinyinStringArray(c, format);
+            }catch(BadHanyuPinyinOutputFormatCombination e){
+                e.printStackTrace();
+            }
+            // 如果c不是汉字，toHanyuPinyinStringArray会返回null
+            if(pinyin == null) return null;
+            // 只取一个发音，如果是多音字，仅取第一个发音
+            return pinyin[0];
+
+        }
+
+        //转换一个字符串
+        public String getStringPinYin(String str){
+            StringBuilder sb = new StringBuilder();
+            String tempPinyin = null;
+            for(int i = 0; i < str.length(); ++i){
+                tempPinyin =getCharacterPinYin(str.charAt(i));
+                if(tempPinyin == null){
+                    // 如果str.charAt(i)非汉字，则保持原样
+                    sb.append(str.charAt(i));
+                }else{
+                    sb.append(tempPinyin);
+                }
+            }
+            return sb.toString();
         }
     }
 }
