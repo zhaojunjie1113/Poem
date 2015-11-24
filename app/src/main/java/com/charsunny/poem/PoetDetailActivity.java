@@ -1,6 +1,7 @@
 package com.charsunny.poem;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,6 +11,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -21,15 +23,18 @@ public class PoetDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int pid = getIntent().getIntExtra("pid", 0);
+        final int pid = getIntent().getIntExtra("pid", 0);
         AuthorEntity author = AuthorEntity.getPoetById(pid);
         setContentView(R.layout.activity_poem);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        TextView titleView = (TextView)toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(author.name);
+        titleView.setText("唐代");
+        LinearLayout layout = (LinearLayout)findViewById(R.id.bottombar);
+        layout.setVisibility(View.GONE);
 
         TextView textView = (TextView)findViewById(R.id.content);
         textView.setText(author.description);
@@ -42,8 +47,9 @@ public class PoetDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent it = new Intent(PoetDetailActivity.this, PoetActivity.class);
+                it.putExtra("pid", pid);
+                startActivity(it);
             }
         });
     }

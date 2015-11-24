@@ -17,7 +17,7 @@
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
-            android:title="收藏" />
+            android:title="设置" />
     </group>
 
     <item android:title="分享app">
@@ -29,7 +29,7 @@
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="发送" />
+                android:title="捐赠" />
         </menu>
     </item>
 

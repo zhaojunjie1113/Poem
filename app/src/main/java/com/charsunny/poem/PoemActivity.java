@@ -1,5 +1,9 @@
 package com.charsunny.poem;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.ImageViewBitmapInfo;
+import com.koushikdutta.ion.Ion;
+
 public class PoemActivity extends AppCompatActivity {
 
     @Override
@@ -21,23 +29,43 @@ public class PoemActivity extends AppCompatActivity {
         PoemEntity poem = PoemEntity.getPoemById(pid);
         setContentView(R.layout.activity_poem);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        TextView titleView = (TextView)toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setSubtitle("" + poem.aid);
         getSupportActionBar().setTitle(poem.name);
+        titleView.setText(poem.name);
 
         TextView textView = (TextView)findViewById(R.id.content);
         textView.setText(poem.content);
         FontManager.sharedInstance(null).applyFont(textView);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        //fab.setBackgroundDrawable(Drawable.createFromPath());
+        final AuthorEntity author = AuthorEntity.getPoetById(poem.aid);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (author.name != null) {
+            PinyinUtil hanyu = new PinyinUtil();
+            String image = "http://so.gushiwen.org/authorImg/" + hanyu.getStringPinYin(author.name) + ".jpg";
+            Ion.with(this).load(image).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                @Override
+                public void onCompleted(Exception e, Bitmap result) {
+                    if (result != null) {
+                        Bitmap zoomBitmap = ImageUtil.zoomBitmap(result, 100, 100);
+                        //获取圆角图片
+                        Bitmap roundBitmap = ImageUtil.getRoundedCornerBitmap(zoomBitmap, 50.0f);
+                        fab.setImageBitmap(roundBitmap);
+                    } else {
+                        Bitmap authorBit = ImageUtil.textAsBitmap(author.name, 40, Color.BLACK, 80);
+                        fab.setImageBitmap(authorBit);
+                    }
+                }
+            });
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent it = new Intent(PoemActivity.this, PoetDetailActivity.class);
+                it.putExtra("pid", author.pid);
+                startActivity(it);
             }
         });
     }

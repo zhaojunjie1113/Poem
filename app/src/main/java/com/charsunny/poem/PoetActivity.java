@@ -1,6 +1,8 @@
 package com.charsunny.poem;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.victor.loading.book.BookLoading;
 
@@ -28,7 +31,7 @@ public class PoetActivity extends AppCompatActivity {
     private View headerView;
     private BookLoading bookLoading;
     private PoetContentAdapter contentAdapter;
-    private RecomandFragment.Hanyu hanyu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +42,8 @@ public class PoetActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        final int aid = getIntent().getIntExtra("pos", 0);
-        AuthorEntity author = AuthorEntity.getPoetById(aid);
+        final int aid = getIntent().getIntExtra("pid", 0);
+        final AuthorEntity author = AuthorEntity.getPoetById(aid);
         List<PoemEntity> poems = PoemEntity.getPoemsByAuthor(aid);
         if (author != null) {
             getSupportActionBar().setTitle(author.name);
@@ -54,24 +57,28 @@ public class PoetActivity extends AppCompatActivity {
         listView.addHeaderView(headerView);
         listView.setAdapter(contentAdapter);
 
-        ImageView imageView = (ImageView)headerView.findViewById(R.id.image);
+        final ImageView imageView = (ImageView)headerView.findViewById(R.id.image);
         TextView nameLabel = (TextView)headerView.findViewById(R.id.name);
         TextView descLabel = (TextView)headerView.findViewById(R.id.desc);
         nameLabel.setText(author.name);
         descLabel.setText("共存诗词作品" + poems.size() + "首");
         FontManager.sharedInstance(null).applyFont(nameLabel, descLabel);
-        //String image = "http://so.gushiwen.org/authorImg/" + hanyu.getStringPinYin(author.name)+ ".jpg";
-        //Ion.with(imageView).error(R.drawable.ic_menu_gallery).load(image);
-
-        imageView.setOnClickListener(new View.OnClickListener() {
+        PinyinUtil hanyu = new PinyinUtil();
+        String image = "http://so.gushiwen.org/authorImg/" + hanyu.getStringPinYin(author.name) + ".jpg";
+        Ion.with(this).load(image).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
             @Override
-            public void onClick(View v) {
-                Intent it = new Intent(PoetActivity.this, PoetDetailActivity.class);
-                it.putExtra("pid", aid);
-                startActivity(it);
+            public void onCompleted(Exception e, Bitmap result) {
+                if (result != null) {
+                    Bitmap zoomBitmap = ImageUtil.zoomBitmap(result, 60, 60);
+                    //获取圆角图片
+                    Bitmap roundBitmap = ImageUtil.getRoundedCornerBitmap(zoomBitmap, 30.0f);
+                    imageView.setImageBitmap(roundBitmap);
+                } else {
+                    Bitmap authorBit = ImageUtil.textAsBitmap(author.name, 18, Color.BLACK, 60);
+                    imageView.setImageBitmap(authorBit);
+                }
             }
         });
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

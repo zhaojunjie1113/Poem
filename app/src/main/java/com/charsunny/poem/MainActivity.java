@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity
     private ColumnFragment columnFragment;
     private DiscorveryFragment discorveryFragment;
     private FavFragment favFragment;
+    protected Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity
         setDefaultFragment();
     }
 
+
     public void setDefaultFragment() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -79,6 +81,11 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.main, menu);
+        this.menu = menu;
+        MenuItem hisMenu = this.menu.findItem(R.id.action_history);
+        MenuItem searchMenu = this.menu.findItem(R.id.menu_search);
+        hisMenu.setVisible(true);
+        searchMenu.setVisible(false);
         return true;
     }
 
@@ -101,6 +108,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        MenuItem hisMenu = this.menu.findItem(R.id.action_history);
+        MenuItem searchMenu = this.menu.findItem(R.id.menu_search);
         int id = item.getItemId();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
@@ -109,24 +118,32 @@ public class MainActivity extends AppCompatActivity
             if (recomandFragment == null) {
                 recomandFragment = new RecomandFragment();
             }
+            hisMenu.setVisible(true);
+            searchMenu.setVisible(false);
             transaction.replace(R.id.id_content, recomandFragment);
         } else if (id == R.id.nav_gallery) {
             toolbar.setTitle("发现");
             if (discorveryFragment == null) {
                 discorveryFragment = new DiscorveryFragment();
             }
+            hisMenu.setVisible(false);
+            searchMenu.setVisible(true);
             transaction.replace(R.id.id_content, discorveryFragment);
         } else if (id == R.id.nav_slideshow) {
             toolbar.setTitle("专栏");
             if (columnFragment == null) {
                 columnFragment = ColumnFragment.newInstance(1);
             }
+            hisMenu.setVisible(false);
+            searchMenu.setVisible(true);
             transaction.replace(R.id.id_content, columnFragment);
         } else if (id == R.id.nav_manage) {
-            toolbar.setTitle("收藏");
+            toolbar.setTitle("设置");
             if (favFragment == null) {
                 favFragment = new FavFragment();
             }
+            hisMenu.setVisible(false);
+            searchMenu.setVisible(false);
             transaction.replace(R.id.id_content, favFragment);
         } else if (id == R.id.nav_share) {
 
