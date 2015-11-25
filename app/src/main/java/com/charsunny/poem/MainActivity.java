@@ -2,6 +2,7 @@ package com.charsunny.poem;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -97,7 +98,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_history) {
+            Intent it = new Intent(this, RecommandHistoryActivity.class);
+            startActivity(it);
             return true;
         }
 
@@ -138,7 +141,7 @@ public class MainActivity extends AppCompatActivity
             searchMenu.setVisible(true);
             transaction.replace(R.id.id_content, columnFragment);
         } else if (id == R.id.nav_manage) {
-            toolbar.setTitle("设置");
+            toolbar.setTitle("我的");
             if (favFragment == null) {
                 favFragment = new FavFragment();
             }

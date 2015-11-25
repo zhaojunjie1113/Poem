@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -15,10 +14,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import net.sourceforge.pinyin4j.*;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
-import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -54,6 +49,11 @@ public class RecomandFragment extends Fragment {
         Ion.with(this).load("http://charsunny.ansinlee.com/rec?type=json").asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override
             public void onCompleted(Exception e, JsonObject result) {
+                if (e != null) {
+                    bookLoading.stop();
+                    bookLoading.setVisibility(View.GONE);
+                    return;
+                }
                 String title = result.get("Title").getAsString();
                 String desc = result.get("Desc").getAsString();
                 String time = result.get("Time").getAsString();
@@ -113,7 +113,7 @@ public class RecomandFragment extends Fragment {
             View view = convertView;
             if (view == null) {
                 view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.content_column, parent, false);
+                        .inflate(R.layout.content_column_cell, parent, false);
             }
             final ImageView imageView = (ImageView)view.findViewById(R.id.imageView);
             TextView authorView = (TextView)view.findViewById(R.id.author);

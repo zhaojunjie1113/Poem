@@ -28,7 +28,7 @@ public class MyColumnRecyclerViewAdapter extends RecyclerView.Adapter<MyColumnRe
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.content_column, parent, false);
+                .inflate(R.layout.content_column_cell, parent, false);
         return new ViewHolder(view);
     }
 
