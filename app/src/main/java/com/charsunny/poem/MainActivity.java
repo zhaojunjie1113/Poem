@@ -3,6 +3,7 @@ package com.charsunny.poem;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity
     private ColumnFragment columnFragment;
     private DiscorveryFragment discorveryFragment;
     private FavFragment favFragment;
+    private DonateFragment donateFragment;
     protected Menu menu;
 
     @Override
@@ -42,8 +44,10 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent data=new Intent(Intent.ACTION_SENDTO);
+                data.setData(Uri.parse("mailto:charsunny@gmail.com"));
+                data.putExtra(Intent.EXTRA_SUBJECT, "意见反馈");
+                startActivity(data);
             }
         });
 
@@ -151,7 +155,13 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-
+            toolbar.setTitle("捐赠");
+            if (donateFragment == null) {
+                donateFragment = new DonateFragment();
+            }
+            hisMenu.setVisible(false);
+            searchMenu.setVisible(false);
+            transaction.replace(R.id.id_content, donateFragment);
         }
         transaction.commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

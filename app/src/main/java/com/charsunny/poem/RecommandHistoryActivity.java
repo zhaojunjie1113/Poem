@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,20 +68,20 @@ public class RecommandHistoryActivity extends AppCompatActivity {
             return;
         }
         isLoading = true;
-        Ion.with(this).load("http://charsunny.ansinlee.com/his?type=json&page=" + currentPage).asJsonObject().setCallback(new FutureCallback<JsonObject>() {
+        Ion.with(this).load("http://charsunny.ansinlee.com/his?type=json&page=" + currentPage).asJsonArray().setCallback(new FutureCallback<JsonArray>() {
             @Override
-            public void onCompleted(Exception e, JsonObject result) {
+            public void onCompleted(Exception e, JsonArray result) {
                 isLoading = false;
+                Log.v("RecommandHistoryAct", "getServerData e:" + e);
                 if (e != null) {
                     return;
                 }
                 currentPage ++;
                 bookLoading.stop();
                 bookLoading.setVisibility(View.GONE);
-                JsonArray array = result.getAsJsonArray();
-                if (array == null) {
-                    contentAdapter.addItems(array);
-                    if (array.size() < 10) {
+                if (null != result) {
+                    contentAdapter.addItems(result);
+                    if (result.size() < 10) {
                         isLoadingfinsh = true;
                     }
                 } else {
@@ -142,9 +143,19 @@ public class RecommandHistoryActivity extends AppCompatActivity {
             final JsonObject poem =  mValues.get(position).getAsJsonObject();
             FontManager.sharedInstance(null).applyFont(timeView, titleView, descView);
             if (poem instanceof  JsonObject) {
+                final int rid = poem.get("Id").getAsInt();
                 titleView.setText(poem.get("Title").getAsString());
                 timeView.setText(poem.get("Time").getAsString());
                 descView.setText(poem.get("Desc").getAsString());
+
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RecommandHistoryActivity.this, HistoryDetailActivity.class);
+                        intent.putExtra("rid", rid);
+                        RecommandHistoryActivity.this.startActivity(intent);
+                    }
+                });
             }
             return view;
         }

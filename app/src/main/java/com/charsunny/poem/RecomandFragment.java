@@ -46,7 +46,12 @@ public class RecomandFragment extends Fragment {
     }
 
     private void getServerData() {
-        Ion.with(this).load("http://charsunny.ansinlee.com/rec?type=json").asJsonObject().setCallback(new FutureCallback<JsonObject>() {
+        int rid = getActivity().getIntent().getIntExtra("rid" , 0);
+        String url = "http://charsunny.ansinlee.com/rec?type=json";
+        if (rid != 0 ) {
+            url = "http://charsunny.ansinlee.com/rec/" + rid + "?type=json";
+        }
+        Ion.with(this).load(url).asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override
             public void onCompleted(Exception e, JsonObject result) {
                 if (e != null) {
