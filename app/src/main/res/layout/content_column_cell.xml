@@ -13,7 +13,7 @@
             android:layout_height="40dp"
             android:scaleType="fitCenter"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_menu_gallery"
+            android:src="@drawable/ic_menu_recommend"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"

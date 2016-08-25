@@ -3,4 +3,12 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="discovery1">#FFC1C1</color>
+    <color name="discovery2">#FFDAB9</color>
+    <color name="discovery3">#C1FFC1</color>
+    <color name="discovery4">#CCCCCC</color>
+    <color name="discovery5">#EEAEEE</color>
+
+    <color name="white">#FFFFFF</color>
 </resources>

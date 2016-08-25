@@ -4,7 +4,7 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;
 
 /**
- * Created by nuochong on 15/11/23.
+ * Created by zjj on 15/11/23.
  */
 public class MyApplication extends Application {
     @Override

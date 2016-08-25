@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,21 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-
-import com.activeandroid.ActiveAndroid;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     protected Toolbar toolbar;
     protected FloatingActionButton fab;
-    public int currentId = R.id.nav_camera;
-    private RecomandFragment recomandFragment;
-    private ColumnFragment columnFragment;
-    private DiscorveryFragment discorveryFragment;
-    private FavFragment favFragment;
-    private DonateFragment donateFragment;
+    private RecomandFragment recomandFragment;//推荐
+    private ColumnFragment columnFragment;//专栏
+    private DiscorveryFragment discorveryFragment;//发现
+    private ManageFragment manageFragment;//设置
+    private DonateFragment donateFragment;//捐赠
     protected Menu menu;
 
     @Override
@@ -120,7 +114,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_recommend) {
             toolbar.setTitle("诗词");
             if (recomandFragment == null) {
                 recomandFragment = new RecomandFragment();
@@ -128,7 +122,7 @@ public class MainActivity extends AppCompatActivity
             hisMenu.setVisible(true);
             searchMenu.setVisible(false);
             transaction.replace(R.id.id_content, recomandFragment);
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_discovery) {
             toolbar.setTitle("发现");
             if (discorveryFragment == null) {
                 discorveryFragment = new DiscorveryFragment();
@@ -136,25 +130,29 @@ public class MainActivity extends AppCompatActivity
             hisMenu.setVisible(false);
             searchMenu.setVisible(true);
             transaction.replace(R.id.id_content, discorveryFragment);
-        } else if (id == R.id.nav_slideshow) {
-            toolbar.setTitle("专栏");
-            if (columnFragment == null) {
-                columnFragment = ColumnFragment.newInstance(1);
-            }
-            hisMenu.setVisible(false);
-            searchMenu.setVisible(true);
-            transaction.replace(R.id.id_content, columnFragment);
-        } else if (id == R.id.nav_manage) {
-            toolbar.setTitle("我的");
-            if (favFragment == null) {
-                favFragment = new FavFragment();
+//        } else if (id == R.id.nav_slideshow) {
+//            toolbar.setTitle("专栏");
+//            if (columnFragment == null) {
+//                columnFragment = ColumnFragment.newInstance(1);
+//            }
+//            hisMenu.setVisible(false);
+//            searchMenu.setVisible(true);
+//            transaction.replace(R.id.id_content, columnFragment);
+        } else if (id == R.id.nav_settings) {
+            toolbar.setTitle("设置");
+            if (manageFragment == null) {
+                manageFragment = new ManageFragment();
             }
             hisMenu.setVisible(false);
             searchMenu.setVisible(false);
-            transaction.replace(R.id.id_content, favFragment);
+            transaction.replace(R.id.id_content, manageFragment);
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "诗词分享"); // 分享的主题
+            intent.putExtra(Intent.EXTRA_TEXT, "分享内容"); // 分享的内容
+            startActivity(intent);
+        } else if (id == R.id.nav_donate) {
             toolbar.setTitle("捐赠");
             if (donateFragment == null) {
                 donateFragment = new DonateFragment();

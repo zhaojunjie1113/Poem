@@ -14,5 +14,5 @@
         app:showAsAction="ifRoom|collapseActionView"
         android:inputType="textCapWords"
         android:imeOptions="actionSearch"
-        android:title="search" />
+        android:title="搜索" />
 </menu>

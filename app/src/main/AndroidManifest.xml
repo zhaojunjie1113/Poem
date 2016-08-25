@@ -48,6 +48,15 @@
             android:name=".HistoryDetailActivity"
             android:label="@string/title_activity_history_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <activity android:name=".WeiboActivity">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

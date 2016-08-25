@@ -5,13 +5,13 @@
     <item android:id="@+id/menu_search"
         android:title="Search"
         app:showAsAction="always"
-        app:actionViewClass="android.widget.SearchView"  />
+        app:actionViewClass="android.widget.SearchView"/>
 
     <item
         android:id="@+id/action_history"
-        android:title="收藏"
+        android:title="历史推荐"
         android:orderInCategory="100"
-        android:icon="@mipmap/history"
+        android:icon="@drawable/history"
         app:showAsAction="always" />
 
 </menu>

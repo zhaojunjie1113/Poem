@@ -22,7 +22,7 @@ import com.koushikdutta.ion.*;
 import com.victor.loading.book.BookLoading;
 
 /**
- * Created by junjiezhao on 15/11/22.
+ * Created by zjj on 15/11/22.
  */
 public class RecomandFragment extends Fragment {
 

@@ -9,17 +9,18 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:layout_gravity="center_horizontal"
-        android:src="@android:drawable/sym_def_app_icon" />
+        android:src="@drawable/def_user_icon" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="尚未绑定"
+        android:textSize="14dp"
         android:layout_gravity="center_horizontal"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -28,6 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:textSize="13dp"
         android:text="绑定微博帐号" />
 
     <LinearLayout
@@ -45,13 +47,14 @@
             android:layout_height="match_parent">
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:src="@android:drawable/ic_dialog_email"/>
+                android:layout_height="18dp"
+                android:src="@drawable/ic_dialog_email"/>
             <TextView
                 android:id="@+id/text_comment"
                 android:layout_width="wrap_content"
+                android:layout_marginLeft="4dp"
                 android:textSize="14dp"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:layout_height="wrap_content"
                 android:text="消息"/>
         </LinearLayout>
@@ -64,12 +67,15 @@
             android:layout_height="match_parent">
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:src="@android:drawable/star_big_on"/>
+                android:layout_height="18dp"
+                android:src="@drawable/star_off"/>
             <TextView
                 android:id="@+id/text_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:textColor="@color/white"
+                android:textSize="14dp"
                 android:text="收藏"/>
         </LinearLayout>
     </LinearLayout>

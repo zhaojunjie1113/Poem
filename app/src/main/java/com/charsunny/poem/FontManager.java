@@ -8,7 +8,7 @@ import android.widget.TextView;
 import java.util.HashMap;
 
 /**
- * Created by nuochong on 15/11/23.
+ * Created by zjj on 15/11/23.
  */
 public class FontManager {
 

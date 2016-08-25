@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by junjiezhao on 15/12/2.
+ * Created by zjj on 15/12/2.
  */
 public class DonateFragment  extends Fragment {
 
